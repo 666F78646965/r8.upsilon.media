@@ -3,48 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>r8.upsilon.dev</title>
+    <title>r8.upsilon.media</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; color: #fff;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Courier New', Courier, monospace; overflow: hidden;
+            cursor: default;
         }
-        .top-left {
-            position: absolute;
-            top: 25px;
-            left: 25px;
+
+        .top-left { position: absolute; top: 25px; left: 25px; z-index: 10; }
+
+        .video-container {
+            width: 80px; margin-top: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; border-radius: 5px; overflow: hidden;
         }
-        .media-box {
-            width: 80px;
-            margin-top: 10px;
-        }
-        video {
-            width: 100%;
-            display: block;
-        }
-        .center-text {
-            font-size: 1.2rem;
-            letter-spacing: 0.2em;
-            text-align: center;
+        .video-container:hover { transform: scale(0.9); box-shadow: 0 0 20px rgba(0, 150, 255, 0.5); }
+        video { width: 100%; display: block; pointer-events: none; }
+
+        .center-text { font-size: 1.2rem; letter-spacing: 0.2em; text-align: center; z-index: 1; }
+
+        #plasma-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 5; opacity: 0;
+            background: radial-gradient(circle 300px at var(--mouse-x) var(--mouse-y), rgba(0, 100, 255, 0.3) 0%, rgba(0, 0, 0, 0) 80%);
+            transition: opacity 0.5s ease; filter: blur(20px);
         }
     </style>
 </head>
 <body>
+
     <div class="top-left">
         <div>🆈 r8.𝘂𝗽𝘀𝗶𝗹𝗼𝗻.dev</div>
-        <div class="media-box">
-            <video src="https://raw.githubusercontent.com/666F78646965/r8.upsilon.dev/main/cube.mp4" autoplay muted loop playsinline></video>
+        <div class="video-container" id="trigger-btn">
+            <video src="https://raw.githubusercontent.com/666F78646965/r8.upsilon.media/main/cube.mp4" autoplay muted loop playsinline></video>
         </div>
     </div>
-    <div class="center-text">ＡＩ ＋ ＨＵＭＡＮ ＣＯＬＬＡＢＯＲＡＴＩＯＮ</div>
+
+    <div id="plasma-layer"></div>
+    <div class="center-text">ＡＩ ＋ ＨＵＭＡＮ<br> ＣＯＬＬＡＢＯＲＡＴＩＯＮ</div>
+
+    <script>
+        const btn = document.getElementById('trigger-btn');
+        const plasma = document.getElementById('plasma-layer');
+        let timer;
+
+        const updatePlasma = (e) => {
+            plasma.style.setProperty('--mouse-x', e.clientX + 'px');
+            plasma.style.setProperty('--mouse-y', e.clientY + 'px');
+            plasma.style.opacity = '1';
+            clearTimeout(timer);
+            timer = setTimeout(() => { plasma.style.opacity = '0'; }, 500);
+        };
+
+        btn.addEventListener('mousemove', updatePlasma);
+        btn.addEventListener('touchmove', (e) => updatePlasma(e.touches[0]));
+        
+        btn.addEventListener('click', () => {
+            if(confirm("Redirect to x.com.r8.upsilon.media?")) {
+                window.location.href = "https://x.com.r8.upsilon.media";
+            }
+        });
+    </script>
 </body>
 </html>
