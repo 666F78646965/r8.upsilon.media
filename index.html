@@ -24,11 +24,22 @@
 
         .center-text { font-size: 1.2rem; letter-spacing: 0.2em; text-align: center; z-index: 1; }
 
+        #text-reveal-container {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none; z-index: 6;
+            color: rgba(255, 255, 255, 0.5);
+            mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), white 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), white 0%, transparent 80%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
         #plasma-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 5; opacity: 0;
-            background: radial-gradient(circle 300px at var(--mouse-x) var(--mouse-y), rgba(0, 100, 255, 0.3) 0%, rgba(0, 0, 0, 0) 80%);
-            transition: opacity 0.5s ease; filter: blur(20px);
+            background: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), rgba(0, 100, 255, 0.2) 0%, rgba(0, 0, 0, 0) 80%);
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -42,23 +53,34 @@
     </div>
 
     <div id="plasma-layer"></div>
+    
+    <div id="text-reveal-container">
+        <div id="hidden-content" style="font-size: 1.5rem; word-break: break-all; padding: 20px; text-align: center;">
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        </div>
+    </div>
+
     <div class="center-text">ＡＩ ＋ ＨＵＭＡＮ<br> ＣＯＬＬＡＢＯＲＡＴＩＯＮ</div>
 
     <script>
         const btn = document.getElementById('trigger-btn');
         const plasma = document.getElementById('plasma-layer');
-        let timer;
+        const reveal = document.getElementById('text-reveal-container');
+        let isDragging = false;
 
-        const updatePlasma = (e) => {
-            plasma.style.setProperty('--mouse-x', e.clientX + 'px');
-            plasma.style.setProperty('--mouse-y', e.clientY + 'px');
-            plasma.style.opacity = '1';
-            clearTimeout(timer);
-            timer = setTimeout(() => { plasma.style.opacity = '0'; }, 500);
+        const updatePosition = (e) => {
+            const x = e.clientX || (e.touches && e.touches[0].clientX);
+            const y = e.clientY || (e.touches && e.touches[0].clientY);
+            document.documentElement.style.setProperty('--mouse-x', x + 'px');
+            document.documentElement.style.setProperty('--mouse-y', y + 'px');
         };
 
-        btn.addEventListener('mousemove', updatePlasma);
-        btn.addEventListener('touchmove', (e) => updatePlasma(e.touches[0]));
+        window.addEventListener('mousedown', () => { isDragging = true; plasma.style.opacity = '1'; reveal.style.opacity = '1'; });
+        window.addEventListener('mouseup', () => { isDragging = false; plasma.style.opacity = '0'; reveal.style.opacity = '0'; });
+        window.addEventListener('mousemove', (e) => { if (isDragging) updatePosition(e); });
+        window.addEventListener('touchstart', (e) => { isDragging = true; plasma.style.opacity = '1'; reveal.style.opacity = '1'; updatePosition(e.touches[0]); });
+        window.addEventListener('touchend', () => { isDragging = false; plasma.style.opacity = '0'; reveal.style.opacity = '0'; });
+        window.addEventListener('touchmove', (e) => { if (isDragging) updatePosition(e.touches[0]); });
         
         btn.addEventListener('click', () => {
             if(confirm("Redirect to x.com.r8.upsilon.media?")) {
